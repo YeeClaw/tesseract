@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tesseract"
+version = "0.1.0"
+dependencies = ["PySide6"]
+
+[project.scripts]
+tesseract = "tesseract.main:main"
