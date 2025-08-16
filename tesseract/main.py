@@ -5,14 +5,21 @@ import sys
 from PySide6.QtWidgets import QApplication
 
 from tesseract.gui.windows import MainWindow
+from tesseract.utils.helpers import load_stylesheet
 
 logger = logging.getLogger(__name__)
 
 
 def init_app() -> None:
     app = QApplication(sys.argv)
+    app.setApplicationName("Tesseract")
+
+    dark_theme = load_stylesheet("dark.qss")
+    light_theme = load_stylesheet("light.qss")
 
     window = MainWindow()
+    app.setStyleSheet(dark_theme)
+
     window.show()
 
     logger.info(f"Starting main loop!")
