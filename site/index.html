@@ -28,8 +28,8 @@
       <h1>Tesseract</h1>
       <p class="lede">
         A <strong>lightweight, feature-rich</strong> launcher for Minecraft:
-        Java Edition. Instances, mod loaders, and modpacks — in a desktop
-        application that stays out of your way.
+        Java Edition. Instances, mod loaders, modpacks, servers, and the tools
+        that build a pack — in a desktop application that stays out of your way.
       </p>
       <p class="lede" style="font-size:.92rem">
         Free software under LGPL-3.0. Written in Python and PySide6.
@@ -41,20 +41,21 @@
   <!-- ============================ Interface ============================ -->
 
   <section>
-    <p class="eyebrow">Interface concept</p>
-    <h2>One window. Your instances on the left, the game one button away.</h2>
+    <p class="eyebrow">The interface</p>
+    <h2>A rail on the left, one page at a time, and the console below all of them.</h2>
     <p style="color:var(--muted)">
-      Tesseract is a two-pane desktop application, not a web page in a frame.
-      These are design concepts, and not photographs of a finished product.
+      Tesseract is a desktop application, and not a web page in a frame. These
+      are design concepts, and not photographs of a finished product.
     </p>
 
-    <div class="tabs" role="tablist" aria-label="Interface states">
-      <button class="tab" role="tab" aria-selected="true"  aria-controls="s1" id="t1" type="button">Library</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="s2" id="t2" type="button">Installing</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="s3" id="t3" type="button">New instance</button>
+    <div class="tabs" role="tablist" aria-label="The pages of the launcher">
+      <button class="tab" role="tab" aria-selected="true"  aria-controls="s1" id="t1" type="button">Instances</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="s2" id="t2" type="button">Build a pack</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="s3" id="t3" type="button">Modpacks</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="s4" id="t4" type="button">A server</button>
     </div>
 
-    <!-- ---- 1. Library ---- -->
+    <!-- ---- 1. Instances ---- -->
     <div class="shot is-active" id="s1" role="tabpanel" aria-labelledby="t1">
       <div class="frame">
       <div class="app">
@@ -62,145 +63,308 @@
           <div class="lights"><i></i><i></i><i></i></div>
           <div class="name">Tesseract - A Minecraft Launcher</div>
         </div>
-        <div class="app-body">
-          <div class="side">
-            <div class="list">
-              <div class="row sel"><b>Survival</b><span>1.21.4 &middot; Vanilla</span></div>
-              <div class="row"><b>Fabric Performance</b><span>1.21.4 &middot; Fabric</span></div>
-              <div class="row"><b>Create Playthrough</b><span>1.20.1 &middot; NeoForge</span></div>
-              <div class="row"><b>Snapshot Testing</b><span>25w14a &middot; Vanilla</span></div>
-            </div>
-            <div class="actions">
-              <div class="btn">New instance</div>
-              <div class="btn ghost">Import a modpack</div>
-            </div>
+        <div class="app-body2">
+          <div class="rail">
+            <div class="rail-mark">TESSERACT</div>
+            <div class="rail-item on">Instances <span class="rail-badge">3</span></div>
+            <div class="rail-item">Modpacks</div>
+            <div class="rail-item">Build <span class="rail-badge">1</span></div>
+            <div class="rail-item">Accounts</div>
+            <div class="rail-item">Settings</div>
+            <div class="rail-item">About</div>
+            <div class="rail-foot">Version 0.1.0</div>
           </div>
-          <div class="detail">
-            <div>
-              <div class="h">Survival</div>
-              <div class="sub">Minecraft 1.21.4 &middot; Vanilla &middot; Java 21</div>
+          <div class="page">
+            <div class="page-head">
+              <span class="mini go">New instance</span>
+              <span class="spacer" style="flex:1"></span>
+              <span class="field-mock">Search the instances</span>
+              <span class="field-mock">By name</span>
             </div>
-            <div class="controls">
-              <span class="label">Account</span>
-              <div class="select"><span>YeeClaww</span></div>
-              <div class="btn ghost">Add an account</div>
-              <div class="spacer"></div>
-              <div class="btn primary">Install and play</div>
+            <div class="kindtabs">
+              <span class="kindtab on">Clients <i>2</i></span>
+              <span class="kindtab">Servers <i>1</i></span>
             </div>
-            <div class="log">
-              Ready. The version files are complete.<br>
-              Shared asset store: <b>enabled</b><br>
-              Last played: 2 hours ago
-            </div>
-            <div class="foot">
-              <span class="check"><i>&check;</i> Share assets between instances</span>
-              <div class="spacer"></div>
-              <span>Delete</span>
-              <span>Theme</span>
+            <div class="cards">
+              <div class="card">
+                <div class="card-icon" style="background:#6a3f7d">C</div>
+                <div class="card-main">
+                  <div class="card-title">Create Mischief <span class="mark pack">PACK</span></div>
+                  <div class="card-facts">1.21.1 &middot; NeoForge &middot; 4096 MB &middot; 34 mods &middot; last played: 3 hours ago</div>
+                  <div class="card-state">Ready to play.</div>
+                  <div class="card-actions">
+                    <span class="mini">Edit</span><span class="mini">Mods</span>
+                    <span class="mini">Folder</span><span class="mini">Copy</span>
+                    <span class="mini">Delete</span>
+                  </div>
+                </div>
+                <div class="card-side"><span class="mini go">Play</span></div>
+              </div>
+              <div class="card">
+                <div class="card-icon" style="background:#3f7d5c">S</div>
+                <div class="card-main">
+                  <div class="card-title">Survival 26.2</div>
+                  <div class="card-facts">26.2 &middot; 4096 MB &middot; last played: 19 Jul 2026</div>
+                  <div class="card-state">Ready to play.</div>
+                  <div class="card-actions">
+                    <span class="mini">Edit</span><span class="mini">Folder</span>
+                    <span class="mini">Copy</span><span class="mini">Delete</span>
+                  </div>
+                </div>
+                <div class="card-side"><span class="mini go">Play</span></div>
+              </div>
             </div>
           </div>
         </div>
+        <div class="dock">
+          <div class="dock-head">
+            <span class="who">Console</span>
+            <span class="field-mock">Launcher</span>
+            <span class="spacer"></span>
+            <span class="mini">Copy</span><span class="mini">Save</span>
+            <span class="mini">Clear</span><span class="mini">Pop out</span>
+          </div>
+          <div class="dock-log">[19:58:49] [tesseract.main/INFO]: Tesseract is ready.
+[19:58:52] [tesseract.core.install/INFO]: Install Minecraft 1.21.1 into the shared store
+[19:58:57] [tesseract.core.launch/INFO]: Start Create Mischief</div>
+        </div>
+        <div class="statusbar">
+          <span class="mini">Hide the console</span>
+          <span class="mini">Open the data folder</span>
+          <span class="spacer"></span>
+          <span>Account</span>
+          <span class="field-mock">YeeClaww (offline)</span>
+          <span class="mini">Manage</span>
+        </div>
       </div>
       </div>
-      <p class="caption">The instance list, the account selector, and one button that installs whatever is missing and then starts the game.</p>
+      <p class="caption">
+        Each instance is a card, with every button that acts on it. One button
+        performs one task: it says Install before the download, and Play after
+        it. A vanilla instance shows no button for the mods, because it loads
+        none.
+      </p>
     </div>
 
-    <!-- ---- 2. Installing ---- -->
+    <!-- ---- 2. Build a pack ---- -->
     <div class="shot" id="s2" role="tabpanel" aria-labelledby="t2" hidden>
+      <div class="frame">
+      <div class="app">
+        <div class="app-bar">
+          <div class="lights"><i></i><i></i><i></i></div>
+          <div class="name">Tesseract - Build</div>
+        </div>
+        <div class="app-body2">
+          <div class="rail">
+            <div class="rail-mark">TESSERACT</div>
+            <div class="rail-item">Instances <span class="rail-badge">3</span></div>
+            <div class="rail-item">Modpacks</div>
+            <div class="rail-item on">Build <span class="rail-badge">1</span></div>
+            <div class="rail-item">Accounts</div>
+            <div class="rail-item">Settings</div>
+            <div class="rail-item">About</div>
+            <div class="rail-foot">Version 0.1.0</div>
+          </div>
+          <div class="page">
+            <div class="page-title">Build</div>
+            <p class="page-note">
+              One definition builds three targets: the client that you play, the
+              server that you test, and the pack file that you give away.
+            </p>
+            <div class="page-head">
+              <span class="mini go">New pack</span>
+              <span class="mini">Capture an instance</span>
+              <span class="mini">Open a pack folder</span>
+            </div>
+            <div class="cards">
+              <div class="card" style="display:block">
+                <div class="card-title">Create Mischief <span class="mark">PACK</span></div>
+                <div class="card-facts">Minecraft 1.21.1 &middot; NeoForge &middot; 34 mods</div>
+                <div class="card-state">Locked: 41 files, 41 client and 28 server. 9 have no side from Modrinth.</div>
+                <div class="targets">
+                  <span class="who">CLIENT</span><span class="what">Create Mischief</span><span class="ok">up to date</span>
+                  <span class="who">SERVER</span><span class="what">Create Mischief (server)</span><span class="drift">1 to add, 1 to update, 1 extra</span>
+                  <span class="who">FILE</span><span class="what">The pack file</span><span class="ok">0.2.1: a pack file and a server pack</span>
+                </div>
+                <div class="card-actions">
+                  <span class="mini go">Sync every target</span>
+                  <span class="mini">Differences</span>
+                  <span class="mini">Update the client</span>
+                  <span class="mini">Update the server</span>
+                  <span class="mini">Export</span>
+                </div>
+                <div class="card-actions">
+                  <span class="mini">Add mods</span>
+                  <span class="mini">Check for updates</span>
+                  <span class="mini">Lock</span>
+                  <span class="mini">Folder</span>
+                  <span class="mini">Forget</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="statusbar">
+          <span class="mini">Hide the console</span>
+          <span class="spacer"></span>
+          <span>Account</span>
+          <span class="field-mock">YeeClaww (offline)</span>
+        </div>
+      </div>
+      </div>
+      <p class="caption">
+        A pack developer keeps a client, a server, and a pack file. Tesseract
+        reads each one against the lock, and it names the difference. One press
+        repairs every target. A mod that the lock does not name stays, because
+        that mod is often the work of a person.
+      </p>
+    </div>
+
+    <!-- ---- 3. Modpacks ---- -->
+    <div class="shot" id="s3" role="tabpanel" aria-labelledby="t3" hidden>
+      <div class="frame">
+      <div class="app">
+        <div class="app-bar">
+          <div class="lights"><i></i><i></i><i></i></div>
+          <div class="name">Tesseract - Modpacks</div>
+        </div>
+        <div class="app-body2">
+          <div class="rail">
+            <div class="rail-mark">TESSERACT</div>
+            <div class="rail-item">Instances <span class="rail-badge">3</span></div>
+            <div class="rail-item on">Modpacks</div>
+            <div class="rail-item">Build <span class="rail-badge">1</span></div>
+            <div class="rail-item">Accounts</div>
+            <div class="rail-item">Settings</div>
+            <div class="rail-item">About</div>
+            <div class="rail-foot">Version 0.1.0</div>
+          </div>
+          <div class="page">
+            <div class="page-title">Modpacks</div>
+            <p class="page-note">
+              Search the modpacks of Modrinth, and install one with the version
+              that you choose.
+            </p>
+            <div class="page-head">
+              <span class="field-mock grow">Search the modpacks of Modrinth</span>
+              <span class="field-mock">Best match</span>
+              <span class="field-mock">Any loader</span>
+              <span class="field-mock">Any version</span>
+            </div>
+            <div>
+              <div class="hit">
+                <span class="thumb"></span>
+                <span class="who"><b>Fabulously Optimized</b><span>robotkoer &middot; 16.0M downloads &middot; Minecraft 26.2</span></span>
+                <span class="mini go">Install</span>
+              </div>
+              <div class="hit">
+                <span class="thumb"></span>
+                <span class="who"><b>Cobblemon Official Modpack</b><span>CobbledStudios &middot; 9.8M downloads &middot; Minecraft 1.21.1</span></span>
+                <span class="mini go">Install</span>
+              </div>
+              <div class="hit">
+                <span class="thumb"></span>
+                <span class="who"><b>Better MC [FABRIC]</b><span>SHXRKIE &middot; 3.1M downloads &middot; Minecraft 1.20.1</span></span>
+                <span class="mini go">Install</span>
+              </div>
+            </div>
+            <div class="pager">
+              <span class="pg step off">Previous</span>
+              <span class="pg on">1</span><span class="pg">2</span><span class="pg">3</span>
+              <span class="gap">&hellip;</span><span class="pg">908</span>
+              <span class="pg step">Next</span>
+            </div>
+            <div class="page-note" style="text-align:center">1 to 20 of 18,147 modpacks &middot; page 1 of 908</div>
+          </div>
+        </div>
+        <div class="statusbar">
+          <span class="mini">Hide the console</span>
+          <span class="spacer"></span>
+          <span>Account</span>
+          <span class="field-mock">YeeClaww (offline)</span>
+        </div>
+      </div>
+      </div>
+      <p class="caption">
+        The results come in pages, and each page replaces the list. A list that
+        only grows hides how much a search found, and it gives no way back to a
+        pack that you passed.
+      </p>
+    </div>
+
+    <!-- ---- 4. A server ---- -->
+    <div class="shot" id="s4" role="tabpanel" aria-labelledby="t4" hidden>
       <div class="frame">
       <div class="app">
         <div class="app-bar">
           <div class="lights"><i></i><i></i><i></i></div>
           <div class="name">Tesseract - A Minecraft Launcher</div>
         </div>
-        <div class="app-body">
-          <div class="side">
-            <div class="list">
-              <div class="row"><b>Survival</b><span>1.21.4 &middot; Vanilla</span></div>
-              <div class="row sel"><b>Fabric Performance</b><span>1.21.4 &middot; Fabric</span></div>
-              <div class="row"><b>Create Playthrough</b><span>1.20.1 &middot; NeoForge</span></div>
-              <div class="row"><b>Snapshot Testing</b><span>25w14a &middot; Vanilla</span></div>
-            </div>
-            <div class="actions">
-              <div class="btn">New instance</div>
-              <div class="btn ghost">Import a modpack</div>
-            </div>
+        <div class="app-body2">
+          <div class="rail">
+            <div class="rail-mark">TESSERACT</div>
+            <div class="rail-item on">Instances <span class="rail-badge">3</span></div>
+            <div class="rail-item">Modpacks</div>
+            <div class="rail-item">Build <span class="rail-badge">1</span></div>
+            <div class="rail-item">Accounts</div>
+            <div class="rail-item">Settings</div>
+            <div class="rail-item">About</div>
+            <div class="rail-foot">Version 0.1.0</div>
           </div>
-          <div class="detail">
-            <div>
-              <div class="h">Fabric Performance</div>
-              <div class="sub">Minecraft 1.21.4 &middot; Fabric 0.16.10 &middot; Java 21</div>
+          <div class="page">
+            <div class="kindtabs">
+              <span class="kindtab">Clients <i>2</i></span>
+              <span class="kindtab on">Servers <i>1</i></span>
             </div>
-            <div class="controls">
-              <span class="label">Account</span>
-              <div class="select"><span>YeeClaww</span></div>
-              <div class="btn ghost">Add an account</div>
-              <div class="spacer"></div>
-              <div class="btn primary">Cancel</div>
-            </div>
-            <div>
-              <div class="barline"><span>Download the assets</span><span>68%</span></div>
-              <div class="bar"><i style="width:68%"></i></div>
-            </div>
-            <div class="log">
-              <b>&check;</b> Read the version manifest<br>
-              <b>&check;</b> Download the client, 1.21.4<br>
-              <b>&check;</b> Install Fabric 0.16.10<br>
-              <b>&check;</b> Check Java 21<br>
-              <em>&rarr;</em> Download the assets &mdash; 1,412 of 2,079 files
-            </div>
-            <div class="foot">
-              <span class="check"><i>&check;</i> Share assets between instances</span>
-              <div class="spacer"></div>
-              <span>Delete</span>
-              <span>Theme</span>
+            <div class="cards">
+              <div class="card">
+                <div class="card-icon" style="background:#7d3f4f">C</div>
+                <div class="card-main">
+                  <div class="card-title">
+                    Create Mischief (server)
+                    <span class="mark server">SERVER</span>
+                    <span class="mark pack">PACK</span>
+                  </div>
+                  <div class="card-facts">1.21.1 &middot; NeoForge &middot; Server &middot; 4096 MB &middot; 28 mods</div>
+                  <div class="card-state">This server runs now.</div>
+                  <div class="card-actions">
+                    <span class="mini">Edit</span><span class="mini">Mods</span>
+                    <span class="mini">Folder</span><span class="mini">Copy</span>
+                    <span class="mini">Delete</span>
+                  </div>
+                </div>
+                <div class="card-side"><span class="mini warn">Stop</span></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      </div>
-      <p class="caption">Every download reports progress. The work happens off the interface thread, so the window never freezes.</p>
-    </div>
-
-    <!-- ---- 3. New instance ---- -->
-    <div class="shot" id="s3" role="tabpanel" aria-labelledby="t3" hidden>
-      <div class="frame">
-      <div class="app">
-        <div class="app-bar">
-          <div class="lights"><i></i><i></i><i></i></div>
-          <div class="name">New instance</div>
+        <div class="dock">
+          <div class="dock-head">
+            <span class="who">Console</span>
+            <span class="field-mock">Create Mischief (server)</span>
+            <span class="spacer"></span>
+            <span class="mini">Copy</span><span class="mini">Save</span>
+            <span class="mini">Clear</span><span class="mini">Pop out</span>
+          </div>
+          <div class="dock-log">[19:58:05] [ServerMain/INFO]: Starting minecraft server version 1.21.1
+[19:58:06] [Server thread/INFO]: Preparing level "world"
+<b>[19:58:08] [Server thread/INFO]: Done (2.309s)! For help, type "help"</b>
+[19:58:20] [Server thread/INFO]: YeeClaww joined the game</div>
+          <div class="dock-input">say the pack is live</div>
         </div>
-        <div class="form">
-          <div class="field">
-            <span class="label">Name</span>
-            <div class="input">Create Playthrough</div>
-          </div>
-          <div class="field">
-            <span class="label">Minecraft version</span>
-            <div class="select" style="min-width:auto"><span>1.20.1 &nbsp;&middot;&nbsp; Release</span></div>
-          </div>
-          <div class="field">
-            <span class="label">Mod loader</span>
-            <div class="chips">
-              <span class="chip">None</span>
-              <span class="chip">Fabric</span>
-              <span class="chip">Quilt</span>
-              <span class="chip on">NeoForge</span>
-            </div>
-          </div>
-          <div class="field">
-            <span class="label">Loader version</span>
-            <div class="select" style="min-width:auto"><span>47.1.106 &nbsp;&middot;&nbsp; Recommended</span></div>
-          </div>
-          <div class="controls" style="border:0;padding:0">
-            <div class="spacer"></div>
-            <div class="btn ghost">Cancel</div>
-            <div class="btn primary">Create</div>
-          </div>
+        <div class="statusbar">
+          <span class="mini">Hide the console</span>
+          <span class="spacer"></span>
+          <span>Create Mischief (server) runs.</span>
         </div>
       </div>
       </div>
-      <p class="caption">Pick a version, pick a loader. Tesseract resolves the rest when you first press play.</p>
+      <p class="caption">
+        A server is an instance with no account. Tesseract shows the agreement
+        of Mojang before the first start, and it writes <code>eula.txt</code>
+        only after you accept it. The Stop button sends the word
+        <code>stop</code>, so the server saves every world.
+      </p>
     </div>
   </section>
 
@@ -211,15 +375,39 @@
     <div class="grid">
       <div class="cell">
         <span class="n">Instances</span>
-        <p>Keep as many separate installations as you want. Each one has its own version, mods, worlds, and settings.</p>
+        <p>Keep as many separate installations as you want. Each one holds its own version, mods, worlds, and settings, in a directory that you can copy to another machine.</p>
       </div>
       <div class="cell">
-        <span class="n">Mod loaders</span>
-        <p>Install Fabric, Quilt, and NeoForge without leaving the launcher. Tesseract finds the right loader build for the version.</p>
+        <span class="n">Four mod loaders</span>
+        <p>Install Fabric, Quilt, Forge, and NeoForge without leaving the launcher. Tesseract finds the loader build that fits the version.</p>
       </div>
       <div class="cell">
-        <span class="n">Modpacks</span>
-        <p>Import a modpack and play it. The launcher downloads the mods and builds the instance for you.</p>
+        <span class="n">Modpacks of Modrinth</span>
+        <p>Search 18,000 packs, choose a version, and play. Tesseract downloads every mod and builds the instance. A pack file from disk works as well.</p>
+      </div>
+      <div class="cell">
+        <span class="n">The mods of an instance</span>
+        <p>Tesseract reads the name, the version, and the loader from inside each jar. A switch turns one mod off, with the same name that every other launcher understands.</p>
+      </div>
+      <div class="cell">
+        <span class="n">Servers</span>
+        <p>An instance runs a server as well. Tesseract installs it for each of the four loaders, it asks for the agreement of Mojang, and the console sends commands to it.</p>
+      </div>
+      <div class="cell">
+        <span class="n">One pack, three targets</span>
+        <p>A pack developer keeps a client, a server, and a pack file. Tesseract builds all three from one definition, and one press repairs each difference.</p>
+      </div>
+      <div class="cell">
+        <span class="n">A lock file</span>
+        <p>The definition says what you want. The lock says which bytes that becomes, with a hash for each file. Two machines then install the same pack.</p>
+      </div>
+      <div class="cell">
+        <span class="n">Export</span>
+        <p>Write a <code>.mrpack</code> file that another launcher installs, and a zip that the operator of a server opens into a directory.</p>
+      </div>
+      <div class="cell">
+        <span class="n">One console</span>
+        <p>The log of the launcher and the output of each instance, in one place. A button moves the console into its own window, and another brings it back.</p>
       </div>
       <div class="cell">
         <span class="n">Shared assets</span>
@@ -233,6 +421,33 @@
         <span class="n">Light and dark</span>
         <p>A theme that follows your choice, and remembers it. Every control carries an accessible name.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- ============================ The command line ============================ -->
+
+  <section>
+    <p class="eyebrow">Without a window</p>
+    <h2>The pack tools also run on the command line.</h2>
+    <p style="color:var(--muted)">
+      The window and the command line call the same core, so they give the same
+      result. A script or a build job can therefore hold a pack.
+    </p>
+    <div class="cli"><i>$ tesseract pack capture ~/packs/mine survival</i>
+  4 mods are in the definition.
+    3 come from Modrinth.
+    1 came from disk, because Modrinth does not know them.
+
+<i>$ tesseract pack status ~/packs/mine</i>
+Client  Create Mischief           <b>up to date</b>
+Server  Create Mischief (server)  <em>1 to add, 1 to update, 1 extra</em>
+
+<i>$ tesseract pack sync ~/packs/mine</i>
+Create Mischief (server): 2 files arrived
+
+<i>$ tesseract pack export ~/packs/mine</i>
+create-mischief-0.2.1.mrpack: 40 mods by address, 1 inside the file
+create-mischief-0.2.1-server.zip: 28 mods by address
     </div>
   </section>
 
@@ -302,6 +517,10 @@
       <dd>Linux, Windows, macOS</dd>
       <dt>Game</dt>
       <dd>Minecraft: Java Edition</dd>
+      <dt>Loaders</dt>
+      <dd>Fabric, Quilt, Forge, NeoForge</dd>
+      <dt>Packs</dt>
+      <dd>Modrinth, and the <code>.mrpack</code> format</dd>
       <dt>Source</dt>
       <dd><a href="https://forge.coltco.net/austin/tesseract">forge.coltco.net/austin/tesseract</a></dd>
       <dt>Mirror</dt>

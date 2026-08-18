@@ -644,3 +644,310 @@ main:focus { outline: none; }
   .tab { padding-top: .7rem; padding-bottom: .7rem; }
   .theme-toggle { padding: .6rem 1rem; }
 }
+
+/* ---------------------------------------------------------------
+   The mock of the launcher, second version.
+
+   The launcher holds a rail on the left, one page at a time, and a
+   console below every page. These rules draw that shape. The older
+   rules above draw the two-pane window of the first concept, and the
+   page no longer uses them.
+   --------------------------------------------------------------- */
+
+.app-body2 {
+  display: grid;
+  grid-template-columns: 9.5rem 1fr;
+  min-height: 22rem;
+}
+
+/* The rail. */
+.rail {
+  border-right: 1px solid var(--line);
+  background: var(--panel-2);
+  display: flex;
+  flex-direction: column;
+  padding: .7rem .5rem .5rem;
+  gap: .1rem;
+}
+
+.rail-mark {
+  font: 700 .7rem/1 var(--sans);
+  letter-spacing: .18em;
+  color: var(--accent-hi);
+  text-align: center;
+  padding: .2rem 0 .8rem;
+}
+
+.rail-item {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .42rem .5rem;
+  border-radius: 4px;
+  border-left: 2px solid transparent;
+  color: var(--muted);
+  font-size: .78rem;
+}
+
+.rail-item.on {
+  background: var(--panel);
+  border-left-color: var(--accent);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.rail-badge {
+  margin-left: auto;
+  background: var(--ok-bg);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  color: var(--ok);
+  font: 700 .6rem/1 var(--mono);
+  padding: .15rem .3rem;
+}
+
+.rail-foot {
+  margin-top: auto;
+  color: var(--muted);
+  font: .6rem/1 var(--mono);
+  text-align: center;
+  padding-top: .5rem;
+}
+
+/* One page. */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+  padding: .8rem .9rem;
+  min-width: 0;
+}
+
+.page-title { font: 600 1rem/1.2 var(--sans); }
+
+.page-note { color: var(--muted); font-size: .74rem; margin: -.3rem 0 .1rem; }
+
+.page-head { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+
+.field-mock {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel-2);
+  color: var(--muted);
+  font-size: .72rem;
+  padding: .32rem .5rem;
+}
+
+.field-mock.grow { flex: 1; min-width: 6rem; }
+
+/* The two tabs that separate the clients from the servers. */
+.kindtabs { display: flex; gap: .8rem; border-bottom: 1px solid var(--line-soft); }
+
+.kindtab {
+  color: var(--muted);
+  font-size: .74rem;
+  font-weight: 500;
+  padding: .25rem .1rem .35rem;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.kindtab.on { color: var(--ink); border-bottom-color: var(--accent); }
+
+.kindtab i { font-style: normal; font-family: var(--mono); font-size: .66rem; opacity: .8; }
+
+/* The card of one instance, and the card of one pack. */
+.cards { display: flex; flex-direction: column; gap: .5rem; }
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel-2);
+  padding: .65rem .7rem;
+  display: flex;
+  gap: .65rem;
+}
+
+.card-icon {
+  width: 2.6rem; height: 2.6rem;
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  font: 700 1.1rem/1 var(--sans);
+  color: #fff;
+  flex: none;
+}
+
+.card-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: .18rem; }
+
+.card-title {
+  display: flex; align-items: center; gap: .4rem; flex-wrap: wrap;
+  font-weight: 600; font-size: .84rem;
+}
+
+.mark {
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font: 700 .55rem/1 var(--mono);
+  letter-spacing: .09em;
+  padding: .16rem .3rem;
+  color: var(--muted);
+}
+
+.mark.pack { color: var(--accent-hi); border-color: var(--accent); }
+.mark.server { color: var(--ok); border-color: var(--ok); }
+
+.card-facts { color: var(--muted); font-size: .7rem; }
+.card-state { color: var(--muted); font-size: .68rem; }
+
+.card-actions { display: flex; gap: .28rem; flex-wrap: wrap; margin-top: .3rem; }
+
+.mini {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: .66rem;
+  padding: .22rem .45rem;
+}
+
+.mini.go {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  font-weight: 600;
+}
+
+.mini.warn { color: var(--accent-hi); border-color: var(--accent); }
+
+.card-side { display: flex; flex-direction: column; gap: .3rem; flex: none; }
+
+/* The rows of the three targets of a pack. */
+.targets {
+  display: grid;
+  grid-template-columns: 3.2rem auto 1fr;
+  gap: .12rem .5rem;
+  font-size: .7rem;
+  margin: .25rem 0 .1rem;
+}
+
+.targets .who { color: var(--muted); font: 700 .58rem/1.5 var(--mono); letter-spacing: .08em; }
+.targets .what { color: var(--muted); }
+.targets .ok { color: var(--ok); font-weight: 600; }
+.targets .drift { color: var(--accent-hi); font-weight: 600; }
+
+/* A row of a search result. */
+.hit {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .45rem .1rem;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.hit:last-of-type { border-bottom: 0; }
+
+.hit .thumb {
+  width: 1.9rem; height: 1.9rem;
+  border-radius: 4px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  flex: none;
+}
+
+.hit .who { flex: 1; min-width: 0; }
+.hit b { display: block; font-size: .78rem; font-weight: 600; }
+.hit span { color: var(--muted); font-size: .68rem; }
+
+/* The row of page numbers. */
+.pager { display: flex; justify-content: center; gap: .2rem; align-items: center; }
+
+.pg {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: .66rem;
+  min-width: 1.35rem;
+  padding: .2rem .3rem;
+  text-align: center;
+}
+
+.pg.on { background: var(--accent); border-color: var(--accent); color: var(--on-accent); font-weight: 700; }
+.pg.step { padding-inline: .5rem; }
+.pg.off { opacity: .45; }
+.pager .gap { color: var(--muted); padding: 0 .1rem; }
+
+/* The console below every page, and the bar at the end. */
+.dock {
+  border-top: 1px solid var(--line);
+  background: var(--panel-2);
+  padding: .5rem .8rem .6rem;
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+
+.dock-head { display: flex; align-items: center; gap: .4rem; }
+.dock-head .who { color: var(--muted); font-size: .7rem; }
+.dock-head .spacer { flex: 1; }
+
+.dock-log {
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--muted);
+  font: .66rem/1.65 var(--mono);
+  padding: .5rem .6rem;
+  min-height: 4.2rem;
+  white-space: pre-wrap;
+}
+
+.dock-log b { color: var(--ok); font-weight: 500; }
+.dock-log em { color: var(--accent-hi); font-style: normal; }
+
+.dock-input {
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--ink);
+  font: .66rem/1 var(--mono);
+  padding: .35rem .5rem;
+}
+
+.statusbar {
+  border-top: 1px solid var(--line);
+  background: var(--panel-2);
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .45rem .8rem;
+  font-size: .68rem;
+  color: var(--muted);
+}
+
+.statusbar .spacer { flex: 1; }
+
+@media (max-width: 34rem) {
+  .app-body2 { grid-template-columns: 8.5rem 1fr; }
+}
+
+/* The commands of the pack tools. A line is wide, so this box scrolls
+   sideways in its own frame. The page itself never does. */
+.cli {
+  background: var(--panel-2);
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  color: var(--muted);
+  font: .68rem/1.75 var(--mono);
+  margin-top: 1rem;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  padding: .8rem .9rem;
+  white-space: pre;
+}
+
+.cli b { color: var(--ok); font-weight: 500; }
+.cli em { color: var(--accent-hi); font-style: normal; }
+.cli i { color: var(--ink); font-style: normal; }
