@@ -1,6 +1,8 @@
 # Directories
 __pycache__/
 *.egg-info/
+.venv/
+docs/
 
 # Files
-
+CLAUDE.md
