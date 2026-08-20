@@ -1,0 +1,85 @@
+# Do not change this label to "alpine" or "node-alpine". Alpine uses musl, and
+# PySide6 publishes manylinux wheels only, so "uv sync" fails there. No sdist
+# can build Qt in a reasonable time.
+name: checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A new push to the same branch cancels the run that it replaces.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # The steps below share one uv install and one sync, which costs less than a split.
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      # This step warns and continues when it cannot reach the cache server, so
+      # it cannot break the gate.
+      - name: Restore the uv cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/uv
+            ~/.local/share/uv/python
+          key: uv-${{ runner.os }}-${{ hashFiles('uv.lock', '.python-version') }}
+          restore-keys: |
+            uv-${{ runner.os }}-
+
+      - name: Sync the environment
+        run: uv sync --locked
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Types
+        run: uv run basedpyright
+
+      - name: Tests
+        run: uv run pytest -q
+
+      - name: Build the wheel
+        run: uv build --wheel --out-dir dist
+
+      # TODO: Break this into a digestable script
+      - name: The wheel carries the stylesheets
+        run: |
+          uv run --no-project python - <<'PY'
+          import glob, zipfile
+          names = set(zipfile.ZipFile(glob.glob("dist/*.whl")[0]).namelist())
+          wanted = {
+              "tesseract/resources/styles/dark.qss",
+              "tesseract/resources/styles/light.qss",
+          }
+          missing = wanted - names
+          assert not missing, f"the wheel is missing: {sorted(missing)}"
+          print("the wheel carries both stylesheets")
+          PY
+
+      - name: A stylesheet loads from the installed wheel
+        run: |
+          uv venv /tmp/wheelenv
+          uv pip install --python /tmp/wheelenv/bin/python --no-deps dist/*.whl
+          cd /tmp && /tmp/wheelenv/bin/python -c "
+          from tesseract.utils.helpers import load_stylesheet
+          assert load_stylesheet('dark.qss').strip()
+          print('dark.qss loaded from the wheel')
+          "
+
+# NOTE:
+# Never add "uv cache prune --ci" before the save. Every dependency
+# of Tesseract is a pre-built wheel, so the command deletes the whole cache.
+# The cache would then always miss.

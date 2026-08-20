@@ -15,18 +15,17 @@ def init_app() -> None:
     app.setApplicationName("Tesseract")
 
     dark_theme = load_stylesheet("dark.qss")
-    light_theme = load_stylesheet("light.qss")
 
     window = MainWindow()
     app.setStyleSheet(dark_theme)
 
     window.show()
 
-    logger.info(f"Starting main loop!")
+    logger.info("Starting main loop!")
     sys.exit(app.exec())
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="A lightweight feature rich Minecraft launcher"
     )
@@ -38,8 +37,9 @@ def main():
     )
     args = parser.parse_args()
 
-    # I don't fully understand the nuance behind how logging works.
-    # If the logger is defined at the top level, how does this work?
+    # A logger at the top level of a module only names itself. It holds no
+    # level and no format of its own. basicConfig gives those to the root
+    # logger, and every named logger sends its records up to the root.
     logging.basicConfig(
         level=getattr(logging, args.log_level),
         format='[%(asctime)s] [%(name)s/%(levelname)s]: %(message)s',
