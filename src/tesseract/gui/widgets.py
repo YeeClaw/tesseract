@@ -1,7 +1,7 @@
 from typing import Literal
+
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QPushButton
-from tesseract.utils.helpers import load_stylesheet
 
 
 class ThemeToggle(QPushButton):
@@ -19,11 +19,13 @@ class ThemeToggle(QPushButton):
         self.change_theme_signal.emit()
 
 
-    def __set_theme(self):
-        dark = load_stylesheet("dark.qss")
-        light = load_stylesheet("light.qss")
+    def __set_theme(self) -> None:
+        """Apply the stylesheet of the other theme.
 
-        pass
+        Not built. The main window owns the stylesheet of the application, so
+        this method waits for the settings store of M1.
+        """
+        raise NotImplementedError
 
 
     def update_button_state(self, theme: Literal['dark', 'light']) -> None:
