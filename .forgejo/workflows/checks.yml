@@ -8,7 +8,7 @@ on:
     branches: [main]
   pull_request:
 
-# A new push to the same branch cancels the run that it replaces. The runner
+# A new push to the same branch cancels the run that it replaces.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -80,7 +80,6 @@ jobs:
           "
 
 # NOTE:
-#
-# 1. Never add "uv cache prune --ci" before the save. Every dependency
-#    of Tesseract is a pre-built wheel, so the command deletes the whole cache.
-#    The cache would then always miss.
+# Never add "uv cache prune --ci" before the save. Every dependency
+# of Tesseract is a pre-built wheel, so the command deletes the whole cache.
+# The cache would then always miss.
