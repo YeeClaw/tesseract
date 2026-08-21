@@ -19,8 +19,9 @@ classifiers = [
 ]
 
 dependencies = [
-    # The user interface. LGPL-3.0, which agrees with the licence of Tesseract.
+    "platformdirs>=4",
     "PySide6>=6.9,<7",
+    "structlog>=25",
 ]
 
 # A dependency group, and not an optional dependency. "uv sync" installs a group
@@ -29,8 +30,6 @@ dependencies = [
 dev = [
     "pytest>=8",
     "ruff>=0.6",
-    # One type checker for the editor and for the gate. Its language server
-    # replaces pyright, so a diagnostic in the buffer is a diagnostic in CI.
     "basedpyright>=1.39",
 ]
 
@@ -57,6 +56,11 @@ ignore = ["E501"]
 
 [tool.basedpyright]
 include = ["src", "tests"]
+# The editor starts the language server outside "uv run", so the server must
+# be told where the environment of the project is. Without these two lines it
+# reads the Python of the system and it resolves no dependency.
+venvPath = "."
+venv = ".venv"
 pythonVersion = "3.14"
 # The same strictness as the default of pyright. Raise this to "strict" when the
 # core is complete, and repair what it then reports.

@@ -1,4 +1,5 @@
-"""The test of the resources of the package.
+"""
+The test of the resources of the package.
 
 The stylesheets are data files inside `tesseract`, and not files beside the
 checkout. This test therefore passes against an installed wheel as well.
