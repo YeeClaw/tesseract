@@ -5,6 +5,7 @@ import structlog
 from PySide6.QtWidgets import QApplication
 
 from tesseract.core import logs, paths
+from tesseract.gui import bridge
 from tesseract.gui.windows import MainWindow
 from tesseract.utils.helpers import load_stylesheet
 
@@ -12,6 +13,11 @@ logger = structlog.get_logger(__name__)
 
 
 def init_app() -> None:
+    # Both calls come before the QApplication. Qt writes its first messages
+    # inside that constructor, and it reads the style of the session there.
+    bridge.install_message_handler()
+    bridge.drop_unavailable_style_override()
+
     app = QApplication(sys.argv)
     app.setApplicationName("Tesseract")
 
