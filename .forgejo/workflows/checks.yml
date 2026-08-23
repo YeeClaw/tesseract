@@ -19,8 +19,26 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
+    # No runner holds a display. A QApplication built under any other platform
+    # plugin looks for xcb, finds no server, and aborts the whole process. The
+    # offscreen plugin paints into memory and needs neither. Every test that
+    # builds a window therefore runs here without a change of its own.
+    env:
+      QT_QPA_PLATFORM: offscreen
+
     steps:
       - uses: https://data.forgejo.org/actions/checkout@v4
+
+      # The wheel of PySide6 links QtWidgets against libGL, and QtGui against
+      # libEGL, X11 and fontconfig. The loader resolves them when the bridge
+      # imports QStyleFactory, so a runner without them fails at collection
+      # long before any test builds a QApplication. A desktop carries them all.
+      - name: Install the libraries that Qt links against
+        run: |
+          if [ "$(id -u)" -ne 0 ]; then SUDO=sudo; else SUDO=; fi
+          $SUDO apt-get update
+          $SUDO apt-get install -y --no-install-recommends \
+            libgl1 libegl1 libxkbcommon0 libfontconfig1 libx11-6 libfreetype6
 
       - name: Install uv
         run: |
