@@ -49,11 +49,7 @@ def _get_populated_instance() -> Instance:
 
 
 def _get_minimal_manifest() -> dict[str, object]:
-    """
-    Give the manifest of a minimal instance as JSON data.
-
-    A full loop through the serializer keeps the base manifest correct.
-    """
+    """Give a minimal manifest as JSON data. A full loop keeps it true to the model."""
     return json.loads(_get_minimal_instance().model_dump_json())
 
 
@@ -124,23 +120,13 @@ def test_missing_field_raises(field: str) -> None:
     ]
 )
 def test_bad_json_raises_validation_error(text: str) -> None:
-    """
-    Ensure that damaged JSON gives a ValidationError.
-
-    An interrupted write leaves a partial manifest on the disk. The store must catch
-    only one type of error, thus pydantic must not let a JSON error through.
-    """
+    """Ensure that damaged JSON gives a ValidationError, and not a JSON error"""
     with pytest.raises(ValidationError):
         Instance.model_validate_json(text)
 
 
 def test_unknown_field_is_ignored() -> None:
-    """
-    Ensure that a manifest with an unknown field still loads.
-
-    A manifest of the same format that holds an unknown field is safe to load. The
-    format field, and not the set of names, controls a refusal.
-    """
+    """Ensure that an unknown field does not stop a load. The format controls a refusal"""
     manifest = _get_minimal_manifest() | {"future_field": "some value"}
 
     instance = Instance.model_validate_json(json.dumps(manifest))
@@ -226,12 +212,7 @@ def test_name_without_letters_gives_id_as_slug(name: str) -> None:
 
 
 def test_stored_slug_doesnt_follow_new_name() -> None:
-    """
-    Ensure that a rename does not move the directory of an instance.
-
-    The slug is the name of the directory. If a new name changed the slug, a rename
-    would point the manifest at a directory that does not exist.
-    """
+    """Ensure that a rename does not move the directory of an instance"""
     manifest = _get_minimal_manifest() | {"name": "A New Name"}
 
     instance = Instance.model_validate_json(json.dumps(manifest))
@@ -274,12 +255,7 @@ def test_loader_with_version_is_valid() -> None:
     ]
 )
 def test_window_below_minimum_raises(window_size: tuple[int, int]) -> None:
-    """
-    Ensure that each axis of the window has its own minimum.
-
-    A bound on the tuple compares the axes in sequence, thus a wide but very short
-    window can get through. Each axis must have its own bound.
-    """
+    """Ensure that each axis has its own minimum. A bound on the tuple compares in sequence"""
     with pytest.raises(ValidationError, match="greater than or equal to"):
         Instance(
             name="test",
@@ -351,12 +327,7 @@ def test_loader_gives_is_modded(
 
 
 def test_each_instance_gets_different_id() -> None:
-    """
-    Ensure that two instances that have the same fields have different identities.
-
-    The store gives a new id to a copy and to an imported directory. The id, and not
-    the name or the slug, identifies an instance.
-    """
+    """Ensure that two instances with the same fields have different identities"""
     first = _get_minimal_instance()
     second = _get_minimal_instance()
 
@@ -378,12 +349,7 @@ def test_minimal_instance_takes_defaults() -> None:
 
 
 def test_creation_time_has_timezone() -> None:
-    """
-    Ensure that the time of creation is not naive.
-
-    A naive time compares incorrectly against an aware time, thus a sort of the
-    instances by the time of creation can give the wrong sequence.
-    """
+    """Ensure that the time of creation is not naive, because a naive time sorts wrongly"""
     before = datetime.now(UTC)
     instance = _get_minimal_instance()
     after = datetime.now(UTC)
