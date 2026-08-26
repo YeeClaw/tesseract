@@ -39,3 +39,8 @@ def data_dir() -> Path:
 def log_dir() -> Path:
     """Give the directory that holds the log files of the launcher."""
     return data_dir()/"logs"
+
+
+def instances_dir() -> Path:
+    """Give the *default* directory which holds instances"""
+    return data_dir()/"instances"
