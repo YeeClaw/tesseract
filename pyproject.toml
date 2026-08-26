@@ -52,7 +52,13 @@ target-version = "py314"
 src = ["src", "tests"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+# PLW1514 is a preview rule, and "explicit-preview-rules" keeps every other
+# preview rule off. It reports a read or a write that gives no encoding, which
+# takes the encoding of the platform: UTF-8 on Linux, and cp1252 on Windows. A
+# test cannot find that fault on a machine that already uses UTF-8.
+preview = true
+explicit-preview-rules = true
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "PLW1514"]
 ignore = ["E501"]
 
 [tool.basedpyright]
