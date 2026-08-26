@@ -5,7 +5,7 @@ This test modules uses two examples of a manifest--one that uses all default val
 and one that is as specifically designed as possible. Both solve different problems
 for testing.
 
-Author: Claude Code.
+Author: Opus 5 (Claude Code).
 """
 
 import json

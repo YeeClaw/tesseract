@@ -6,7 +6,7 @@ message handler of Qt and the log configuration afterwards. No test builds a
 QApplication, because a message of Qt and the list of the styles both need
 none.
 
-Author: Claude Code.
+Author: Opus 5 (Claude Code).
 """
 
 import json

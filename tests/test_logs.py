@@ -5,7 +5,7 @@ Each test writes into a temporary directory. The fixture puts back the
 handlers of the root logger and the defaults of structlog, so that one test
 cannot change the log of the next test.
 
-Author: Claude Code.
+Author: Opus 5 (Claude Code).
 """
 
 import json

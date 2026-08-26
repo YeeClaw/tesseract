@@ -4,7 +4,7 @@ The tests of the directories that Tesseract writes into.
 No test reads the real data directory of the person. Each test that needs a
 path sets the environment variable.
 
-Author: Claude Code.
+Author: Opus 5 (Claude Code).
 """
 
 from pathlib import Path

@@ -11,7 +11,7 @@ Each test reads the source of every module with `ast`. It therefore finds an
 import in a branch that no test runs, and it needs neither Qt nor the library
 to be installed.
 
-Author: Claude Code.
+Author: Opus 5 (Claude Code).
 """
 
 import ast

@@ -7,7 +7,7 @@ snapshot does not show is a fault.
 
 `Instance` shows the current format only. #59 lifts an older one.
 
-Author: Claude Code.
+Author: Opus 5 (Claude Code).
 """
 
 import json
