@@ -10,6 +10,8 @@ that package knows that the library exists.
 Each test reads the source of every module with `ast`. It therefore finds an
 import in a branch that no test runs, and it needs neither Qt nor the library
 to be installed.
+
+Author: Claude Code.
 """
 
 import ast

@@ -6,6 +6,8 @@ Rule 2: the field set of the current format is written down. A change that the
 snapshot does not show is a fault.
 
 `Instance` shows the current format only. #59 lifts an older one.
+
+Author: Claude Code.
 """
 
 import json

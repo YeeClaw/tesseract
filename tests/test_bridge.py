@@ -5,6 +5,8 @@ Each test writes into a temporary directory, and the fixture puts back the
 message handler of Qt and the log configuration afterwards. No test builds a
 QApplication, because a message of Qt and the list of the styles both need
 none.
+
+Author: Claude Code.
 """
 
 import json

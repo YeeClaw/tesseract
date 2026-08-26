@@ -4,76 +4,54 @@ Ensure that instances are robust and that drift is caught as soon as possible.
 This test modules uses two examples of a manifest--one that uses all default values,
 and one that is as specifically designed as possible. Both solve different problems
 for testing.
+
+Author: Claude Code.
 """
 
 import json
+from collections.abc import Callable
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Literal
-from uuid import uuid4
 
 import pytest
 from pydantic import ValidationError
 
+from builders import get_minimal_instance, get_populated_instance
 from tesseract.constants import MANIFEST_FORMAT
 from tesseract.core.models import Instance
 
 
-def _get_minimal_instance() -> Instance:
-    return Instance(
-        name="test",
-        minecraft_version="1.21.1",
-        memory_mb=1024
-    )
-
-
-def _get_populated_instance() -> Instance:
-    return Instance(
-        id=uuid4(),
-        name="Create: Mischief",
-        slug="create-mischief",
-        format=1,
-        minecraft_version="1.21.1",
-        memory_mb=8192,
-        loader="neoforge",
-        loader_version="21.1.248",
-        launch_version="neoforge-21.1.248",
-        kind="server",
-        java_path=Path("some/java/dir"),
-        jvm_arguments=["-Xms4G", "-Xmx8G"],
-        window_size=(1280, 720),
-        created_at=datetime(2026, 5, 1, 2, 23, 00, tzinfo=UTC),
-        played_at=datetime(2026, 8, 22, 23, 42, 00, tzinfo=UTC)
-    )
-
-
-
 def _get_minimal_manifest() -> dict[str, object]:
     """Give a minimal manifest as JSON data. A full loop keeps it true to the model."""
-    return json.loads(_get_minimal_instance().model_dump_json())
+    return json.loads(get_minimal_instance().model_dump_json())
 
 
+# author: austin <colt.austin@coltco.net>
 @pytest.mark.parametrize(
-    "instance",
+    "build",
     [
         pytest.param(
-            _get_minimal_instance(),
+            get_minimal_instance,
             id="minimal"
         ),
         pytest.param(
-            _get_populated_instance(),
+            get_populated_instance,
             id="populated"
         )
     ]
 )
-def test_model_roundtrip(instance: Instance) -> None:
+def test_model_roundtrip(build: Callable[[], Instance]) -> None:
     """Ensure that a model can be serialized between pydantic and JSON"""
+    # The builder runs here, and not at collection. Each test gets its own model.
+    instance = build()
+
     json_instance = instance.model_dump_json()
     instance_from_json = Instance.model_validate_json(json_instance)
 
     assert instance == instance_from_json
 
 
+# author: austin <colt.austin@coltco.net>
 @pytest.mark.parametrize(
     ("field", "value", "message"),
     [
@@ -279,7 +257,7 @@ def test_window_at_minimum_is_valid() -> None:
 
 def test_absent_window_gives_no_size() -> None:
     """Ensure that an instance without a window size is valid"""
-    instance = _get_minimal_instance()
+    instance = get_minimal_instance()
 
     assert instance.window_size is None
 
@@ -328,15 +306,15 @@ def test_loader_gives_is_modded(
 
 def test_each_instance_gets_different_id() -> None:
     """Ensure that two instances with the same fields have different identities"""
-    first = _get_minimal_instance()
-    second = _get_minimal_instance()
+    first = get_minimal_instance()
+    second = get_minimal_instance()
 
     assert first.id != second.id
 
 
 def test_minimal_instance_takes_defaults() -> None:
     """Ensure that the default of each optional field does not change without notice"""
-    instance = _get_minimal_instance()
+    instance = get_minimal_instance()
 
     assert instance.format == MANIFEST_FORMAT
     assert instance.loader is None
@@ -351,7 +329,7 @@ def test_minimal_instance_takes_defaults() -> None:
 def test_creation_time_has_timezone() -> None:
     """Ensure that the time of creation is not naive, because a naive time sorts wrongly"""
     before = datetime.now(UTC)
-    instance = _get_minimal_instance()
+    instance = get_minimal_instance()
     after = datetime.now(UTC)
 
     assert instance.created_at.tzinfo is not None
