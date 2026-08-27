@@ -11,6 +11,7 @@ from pathlib import Path
 from uuid import UUID
 
 import structlog
+from pydantic import ValidationError
 
 from tesseract.core.models import Instance
 from tesseract.core.paths import instances_dir
@@ -37,14 +38,22 @@ class InstanceStore:
     """
     @property
     def root(self) -> Path:
+        """The instance store root directory"""
         if self._root is None:
             return instances_dir()
         else:
             return self._root
 
+    @property
+    def skipped(self) -> list[Path]:
+        """A list of skipped directories/files in the store"""
+        return self._skipped
+
+
     def __init__(self, root: Path|None = None):
         self._root = root
         self._store: dict[UUID, _DiskInstance] = {}
+        self._skipped: list[Path] = []
 
         if not self.root.exists():
             log.info("instances directory not found...creating instead")
@@ -55,8 +64,7 @@ class InstanceStore:
 
     # ===[PUBLIC METHODS]===
     def create_instance(self, instance: Instance) -> UUID:
-        """
-        Create a tracked and managed instance on disk and add it to the store.
+        """Create a tracked and managed instance on disk and add it to the store.
 
         Args:
             instance: Pydantic model of an instance to create on disk.
@@ -98,7 +106,45 @@ class InstanceStore:
 
 
     def read_instance(self, path: Path) -> Instance:
-        raise NotImplementedError
+        """Given the path to an instance root, return a model of its manifest.
+
+        Args:
+            path: A Path pointing at the suggested instance directory.
+
+        Returns:
+            An instance Model at the desired root.
+
+        Raises:
+            InstanceError: When the location has an invalid manifest or doesn't exist.
+        """
+        manifest_path = path/"instance.json"
+        manifest_log = log.bind(path=str(manifest_path))
+        try:
+            with open(manifest_path, encoding="utf-8") as manifest:
+                contents = manifest.read()
+        except OSError as e:
+            manifest_log.error("unable to find the requested manifest file")
+            raise InstanceError(f"missing manifest file at {manifest_path}") from e
+        except UnicodeDecodeError as e:
+            manifest_log.error("unable to decode manifest as utf-8")
+            raise InstanceError(
+                f"provided manifest file ({manifest_path}) is not utf-8 encoded"
+            ) from e
+
+        try:
+            instance = Instance.model_validate_json(contents)
+        except ValidationError as e:
+            small_errors = e.errors(include_url=False, include_input=False)
+            manifest_log.error(
+                "unable to validate manifest",
+                errors=small_errors
+            )
+            raise InstanceError(
+                f"found malformed manifest at {manifest_path}: "
+                f"{small_errors}"
+            ) from e
+
+        return instance
 
 
     def update_instance(self, id: UUID) -> dict[str, object]:
@@ -110,15 +156,22 @@ class InstanceStore:
 
 
     def refresh(self) -> None:
-        local_store = {}
+        local_store: dict[UUID, _DiskInstance] = {}
+        skipped: list[Path] = []
         for item in self.root.iterdir():
             if item.is_dir():
                 try:
                     instance = self.read_instance(item)
                     local_store[instance.id] = _DiskInstance(path=item, instance=instance)
                 except InstanceError:
-                    log.debug("unable to read an instance", path=str(item))
-                    continue
+                    skipped.append(item)
+        if skipped:
+            log.info(
+                "skipped directories when refreshing",
+                skipped=[str(item) for item in skipped]
+            )
+
+        self._skipped = skipped
         self._store = local_store
 
 
