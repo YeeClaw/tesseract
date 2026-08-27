@@ -8,6 +8,7 @@ Author: Opus 5 (Claude Code). A `# author:` comment marks each test that someone
 wrote.
 """
 
+import json
 import shutil
 from collections.abc import Callable
 from pathlib import Path
@@ -38,6 +39,17 @@ def _manifest_that_is_not_json(directory: Path) -> None:
 def _manifest_that_is_not_utf8(directory: Path) -> None:
     directory.mkdir()
     (directory/"instance.json").write_bytes(b"\xff\xfe{")
+
+
+def _manifest_that_is_newer(directory: Path) -> None:
+    directory.mkdir()
+
+    clean_manifest = get_minimal_instance().model_dump_json()
+    manifest_dict = json.loads(clean_manifest)
+    manifest_dict["format"] += 1 # Will always be MANIFEST_FORMAT + 1
+    dirty_manifest = json.dumps(manifest_dict)
+
+    (directory/"instance.json").write_text(dirty_manifest, encoding="utf-8")
 
 
 # ===[ROOT]===
@@ -300,17 +312,30 @@ def test_refresh_clears_skipped_after_repair(store: InstanceStore) -> None:
     assert store.skipped == []
 
 
-# author: austin
-# TODO(austin): write this test, then delete the skip and this comment
-@pytest.mark.skip(reason="stub: austin writes this one")
+# author: austin <colt.austin@coltco.net>
 def test_directory_of_newer_format_raises(store: InstanceStore) -> None:
     """A manifest of a format that this release cannot read must not open."""
-    raise NotImplementedError
+    _manifest_that_is_newer(store.root/"newer")
+    with pytest.raises(InstanceError, match="update tesseract"):
+        store.read_instance(store.root/"newer")
 
 
-# author: austin
-# TODO(austin): write this test, then delete the skip and this comment
-@pytest.mark.skip(reason="stub: austin writes this one")
+# author: austin <colt.austin@coltco.net>
 def test_skipped_names_every_damaged_directory(store: InstanceStore) -> None:
-    """Rule 6. A person must be able to learn which instances did not open."""
-    raise NotImplementedError
+    """A person must be able to learn which instances did not open."""
+    # Broken manifests
+    _manifest_that_is_not_json(store.root/"not-json")
+    _manifest_that_is_not_utf8(store.root/"not-encoded-right")
+    _manifest_that_is_newer(store.root/"too-new")
+
+    # Good manifest
+    instance = get_minimal_instance()
+    store.create_instance(instance)
+
+    store.refresh()
+
+    assert sorted(store.skipped) == sorted([
+        store.root/"not-json",
+        store.root/"not-encoded-right",
+        store.root/"too-new",
+    ])

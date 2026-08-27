@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
+from tesseract.constants import MANIFEST_FORMAT
 from tesseract.core.models import Instance
 
 
@@ -32,7 +33,7 @@ def get_populated_instance(**overrides: Any) -> Instance:
         "id": uuid4(),
         "name": "Create: Mischief",
         "slug": "create-mischief",
-        "format": 1,
+        "format": MANIFEST_FORMAT, # Here for testing compatibility
         "minecraft_version": "1.21.1",
         "memory_mb": 8192,
         "loader": "neoforge",
