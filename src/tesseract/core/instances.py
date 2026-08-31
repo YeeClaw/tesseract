@@ -68,8 +68,12 @@ class InstanceStore:
 
         Args:
             instance: Pydantic model of an instance to create on disk.
+
         Raises:
             InstanceError: When an instance's root cannot otherwise be created.
+
+        Returns:
+            The UUID of the created instance.
         """
         if instance.id in self._store:
             raise InstanceError("cannot create duplicate instance from model")
