@@ -6,7 +6,7 @@ slug/name.
 """
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from uuid import UUID
 
@@ -16,7 +16,13 @@ from pydantic import ValidationError
 from tesseract.core.models import Instance
 from tesseract.core.paths import instances_dir
 
-log = structlog.get_logger(__name__)
+log: structlog.stdlib.BoundLogger = structlog.get_logger(__name__)
+UPDATE_DENY_LIST = {
+    "id",
+    "slug",
+    "created_at",
+    "format"
+}
 
 
 class InstanceError(Exception):
@@ -25,8 +31,26 @@ class InstanceError(Exception):
 
 @dataclass
 class _DiskInstance:
-    path: Path
+    """Helper for containing and representing instances on the disk
+
+    Attributes:
+        path: OS path of the *instance root*.
+        instance: In memory model of the instance.
+    """
+    path:     Path
     instance: Instance
+
+
+@dataclass
+class UpdateReceipt:
+    """Helper for handling updated instance transactions.
+
+    Attributes:
+        updated: A dictionary containing the updated key and modified value.
+        denied: a list of keys which were denied by the store (protected values).
+    """
+    updated: dict[str, object] = field(default_factory=dict)
+    denied:  list[str] = field(default_factory=list)
 
 
 class InstanceStore:
@@ -144,15 +168,73 @@ class InstanceStore:
                 errors=small_errors
             )
             raise InstanceError(
-                f"found malformed manifest at {manifest_path}: "
+                f"found malformed manifest at {str(manifest_path)!r}: "
                 f"{small_errors}"
             ) from e
 
         return instance
 
 
-    def update_instance(self, id: UUID) -> dict[str, object]:
-        raise NotImplementedError
+    def update_instance(self, id: UUID, **changes) -> UpdateReceipt:
+        """Update the manifest within a set of allowed changes.
+
+        Args:
+            id: A UUID matching the instance you want to update
+            **changes: Any other keyword arguments matching Instance properties
+
+        Returns:
+            An UpdateReceipt with updated and denied values.
+
+        Raises:
+            InstanceError: when the provided changes do not validate against the model.
+        """
+        try:
+            disc = self._store[id]
+        except KeyError:
+            raise InstanceError(f"no instance with id '{id}' to update") from None
+
+        instance_root = disc.path
+        manifest = instance_root/"instance.json"
+        tmp_file = instance_root/"instance.json.tmp"
+
+        receipt = UpdateReceipt()
+        for deny_item in UPDATE_DENY_LIST:
+            if deny_item in changes:
+                log.warning("tried to update a protected value", value=deny_item)
+                receipt.denied.append(deny_item)
+                del changes[deny_item]
+
+        merged = disc.instance.model_dump() | changes
+
+        # Validate model and handle errors
+        try:
+            updated_instance = Instance.model_validate(merged)
+        except ValidationError as e:
+            small_errors = e.errors(include_url=False, include_input=False)
+            log.error(
+                "unable to validate manifest updates",
+                path=str(manifest),
+                errors=small_errors
+            )
+            raise InstanceError(
+                f"requested updates to {str(manifest)!r} are invalid: "
+                f"{small_errors}"
+            ) from e
+
+        # Apply the actual update
+        tmp_file.write_text(
+            updated_instance.model_dump_json(indent=2),
+            encoding="utf-8"
+        )
+        os.replace(tmp_file, manifest)
+        disc.instance = updated_instance
+
+        # Create change receipt
+        manifest_dict = updated_instance.model_dump()
+        for request in changes:
+            receipt.updated[request] = manifest_dict[request]
+
+        return receipt
 
 
     def delete_instance(self, id: UUID) -> None:
@@ -177,6 +259,7 @@ class InstanceStore:
 
         self._skipped = skipped
         self._store = local_store
+        # TODO: Hook this into the UI so that skips aren't (almost) silent
 
 
     def duplicate_instance(self) -> UUID:
