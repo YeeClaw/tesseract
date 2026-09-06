@@ -3,9 +3,6 @@ A set of unit tests created to ensure that instance stores are behaving
 correctly across implementations.
 
 Each test writes into a temporary directory, and never into the real one.
-
-Author: Opus 5 (Claude Code). A `# author:` comment marks each test that someone else
-wrote.
 """
 
 import json
@@ -55,6 +52,7 @@ def _manifest_that_is_newer(directory: Path) -> None:
 
 
 # ===[ROOT]===
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_missing_root_is_created(tmp_path: Path) -> None:
     """A missing parent must not stop a first start."""
     root = tmp_path/"absent"/"instances"
@@ -65,6 +63,7 @@ def test_missing_root_is_created(tmp_path: Path) -> None:
     assert root.is_dir()
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_empty_root_opens(tmp_path: Path) -> None:
     root = tmp_path/"instances"
     root.mkdir()
@@ -72,6 +71,7 @@ def test_empty_root_opens(tmp_path: Path) -> None:
     assert InstanceStore(root).root == root
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_store_without_root_uses_data_directory(tmp_path: Path) -> None:
     """The fallback must never give the real directory."""
     store = InstanceStore()
@@ -82,6 +82,7 @@ def test_store_without_root_uses_data_directory(tmp_path: Path) -> None:
 
 
 # ===[CREATE, STRUCTURE]===
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_create_gives_directory_structure(store: InstanceStore) -> None:
     """#7 names the three parts."""
     instance = get_minimal_instance()
@@ -94,12 +95,14 @@ def test_create_gives_directory_structure(store: InstanceStore) -> None:
     assert (directory/"logs").is_dir()
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_create_gives_id_of_instance(store: InstanceStore) -> None:
     instance = get_minimal_instance()
 
     assert store.create_instance(instance) == instance.id
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_manifest_holds_model(store: InstanceStore) -> None:
     """A full loop through the disk must change no value."""
     instance = get_minimal_instance()
@@ -109,6 +112,7 @@ def test_manifest_holds_model(store: InstanceStore) -> None:
     assert store.read_instance(store.root/instance.slug) == instance
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_no_temporary_file_stays_on_disk(store: InstanceStore) -> None:
     instance = get_minimal_instance()
 
@@ -121,6 +125,7 @@ def test_no_temporary_file_stays_on_disk(store: InstanceStore) -> None:
 
 
 # ===[CREATE, NAME OF DIRECTORY]===
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_directory_takes_slug(store: InstanceStore) -> None:
     """The slug is the second form of ID."""
     instance = get_minimal_instance(name="Create: Mischief")
@@ -131,6 +136,7 @@ def test_directory_takes_slug(store: InstanceStore) -> None:
     assert (store.root/"create-mischief").is_dir()
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_second_instance_of_one_name_takes_number(store: InstanceStore) -> None:
     """The first instance keeps the plain slug."""
     first = get_minimal_instance(name="Create: Mischief")
@@ -143,6 +149,7 @@ def test_second_instance_of_one_name_takes_number(store: InstanceStore) -> None:
     assert (store.root/"create-mischief-1").is_dir()
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_model_takes_name_of_directory(store: InstanceStore) -> None:
     """The slug and the directory must agree."""
     first = get_minimal_instance(name="Create: Mischief")
@@ -155,6 +162,7 @@ def test_model_takes_name_of_directory(store: InstanceStore) -> None:
     assert store.read_instance(store.root/second.slug).slug == second.slug
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_collision_keeps_first_instance(store: InstanceStore) -> None:
     """A new instance must never write over another one."""
     first = get_minimal_instance(name="Create: Mischief")
@@ -167,6 +175,7 @@ def test_collision_keeps_first_instance(store: InstanceStore) -> None:
 
 
 # ===[CREATE, FAULTS]===
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_one_model_twice_raises(store: InstanceStore) -> None:
     """One ID is one instance."""
     instance = get_minimal_instance()
@@ -178,6 +187,7 @@ def test_one_model_twice_raises(store: InstanceStore) -> None:
     assert len(list(store.root.iterdir())) == 1
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_full_namespace_raises(store: InstanceStore) -> None:
     instance = get_minimal_instance(name="test")
     (store.root/"test").mkdir()
@@ -188,6 +198,7 @@ def test_full_namespace_raises(store: InstanceStore) -> None:
         store.create_instance(instance)
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_full_namespace_writes_into_no_directory(store: InstanceStore) -> None:
     """The fault above must leave every directory as it was."""
     instance = get_minimal_instance(name="test")
@@ -202,6 +213,7 @@ def test_full_namespace_writes_into_no_directory(store: InstanceStore) -> None:
 
 
 # ===[READ]===
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_read_gives_what_create_wrote(store: InstanceStore) -> None:
     instance = get_minimal_instance(name="Create: Mischief")
     store.create_instance(instance)
@@ -209,11 +221,13 @@ def test_read_gives_what_create_wrote(store: InstanceStore) -> None:
     assert store.read_instance(store.root/instance.slug) == instance
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_missing_directory_raises(store: InstanceStore) -> None:
     with pytest.raises(InstanceError, match="missing manifest"):
         store.read_instance(store.root/"absent")
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_missing_manifest_raises(store: InstanceStore) -> None:
     """A directory is not an instance until it holds a manifest."""
     _no_manifest(store.root/"damaged")
@@ -222,6 +236,7 @@ def test_missing_manifest_raises(store: InstanceStore) -> None:
         store.read_instance(store.root/"damaged")
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_manifest_that_is_not_json_raises(store: InstanceStore) -> None:
     _manifest_that_is_not_json(store.root/"damaged")
 
@@ -229,6 +244,7 @@ def test_manifest_that_is_not_json_raises(store: InstanceStore) -> None:
         store.read_instance(store.root/"damaged")
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_manifest_that_is_not_utf8_raises(store: InstanceStore) -> None:
     """A manifest written on another platform must not give a raw decode fault."""
     _manifest_that_is_not_utf8(store.root/"damaged")
@@ -237,6 +253,7 @@ def test_manifest_that_is_not_utf8_raises(store: InstanceStore) -> None:
         store.read_instance(store.root/"damaged")
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 @pytest.mark.parametrize(
     "damage",
     [
@@ -392,6 +409,7 @@ def test_failed_update_leaves_manifest_as_it_was(store: InstanceStore) -> None:
 
 
 # ===[REFRESH]===
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_refresh_finds_instance_of_another_store(tmp_path: Path) -> None:
     """A second store must hold what the first one wrote."""
     root = tmp_path/"instances"
@@ -404,6 +422,7 @@ def test_refresh_finds_instance_of_another_store(tmp_path: Path) -> None:
         reopened.create_instance(instance)
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_refresh_drops_deleted_instance(store: InstanceStore) -> None:
     """A person can delete a directory, and the store must agree."""
     instance = get_minimal_instance()
@@ -415,6 +434,7 @@ def test_refresh_drops_deleted_instance(store: InstanceStore) -> None:
     assert store.create_instance(instance) == instance.id
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_refresh_ignores_file_in_root(store: InstanceStore) -> None:
     (store.root/"notes.txt").write_text("hello", encoding="utf-8")
 
@@ -423,6 +443,7 @@ def test_refresh_ignores_file_in_root(store: InstanceStore) -> None:
     assert store.skipped == []
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_skipped_is_empty_when_every_instance_opens(store: InstanceStore) -> None:
     store.create_instance(get_minimal_instance(name="one"))
     store.create_instance(get_minimal_instance(name="two"))
@@ -432,6 +453,7 @@ def test_skipped_is_empty_when_every_instance_opens(store: InstanceStore) -> Non
     assert store.skipped == []
 
 
+# author: Opus 5 (Claude Code) <llm@coltco.net>
 def test_refresh_clears_skipped_after_repair(store: InstanceStore) -> None:
     """A repaired instance must leave the list of skipped directories."""
     damaged = store.root/"damaged"
