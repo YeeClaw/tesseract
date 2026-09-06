@@ -103,13 +103,12 @@ def test_bad_json_raises_validation_error(text: str) -> None:
         Instance.model_validate_json(text)
 
 
-def test_unknown_field_is_ignored() -> None:
-    """Ensure that an unknown field does not stop a load. The format controls a refusal"""
+def test_unknown_field_is_raised() -> None:
+    """Ensure that an unknown field stops a load."""
     manifest = _get_minimal_manifest() | {"future_field": "some value"}
 
-    instance = Instance.model_validate_json(json.dumps(manifest))
-
-    assert not hasattr(instance, "future_field")
+    with pytest.raises(ValidationError):
+        Instance.model_validate_json(json.dumps(manifest))
 
 
 def test_current_format_loads() -> None:

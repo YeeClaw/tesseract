@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import Annotated, Literal, Self
 from uuid import uuid4
 
-from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
+from pydantic import UUID4, BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from tesseract.constants import MANIFEST_FORMAT
 
@@ -19,6 +19,8 @@ WindowSize = tuple[
 
 
 class Instance(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     id: UUID4 = Field(default_factory=uuid4)
     name: str
     slug: str = ""
