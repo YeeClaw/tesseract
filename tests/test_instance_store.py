@@ -11,7 +11,9 @@ wrote.
 import json
 import shutil
 from collections.abc import Callable
+from datetime import UTC, datetime
 from pathlib import Path
+from uuid import uuid4
 
 import pytest
 
@@ -254,6 +256,139 @@ def test_error_names_manifest(
         store.read_instance(directory)
 
     assert str(directory/"instance.json") in str(error.value)
+
+
+# ===[UPDATE]===
+# author: Fable 5 (Claude Code) <llm@coltco.net>
+def test_update_writes_new_value_to_disk(store: InstanceStore) -> None:
+    instance = get_minimal_instance()
+    store.create_instance(instance)
+
+    store.update_instance(instance.id, memory_mb=2048)
+
+    assert store.read_instance(store.root/instance.slug).memory_mb == 2048
+
+
+# author: Fable 5 (Claude Code) <llm@coltco.net>
+def test_update_gives_receipt_of_updated_values(store: InstanceStore) -> None:
+    instance = get_minimal_instance()
+    store.create_instance(instance)
+
+    receipt = store.update_instance(instance.id, memory_mb=2048, name="renamed")
+
+    assert receipt.updated == {"memory_mb": 2048, "name": "renamed"}
+    assert receipt.denied == []
+
+
+# author: Fable 5 (Claude Code) <llm@coltco.net>
+def test_receipt_holds_coerced_value(store: InstanceStore) -> None:
+    """The receipt holds what the value became, not what was sent."""
+    instance = get_minimal_instance()
+    store.create_instance(instance)
+
+    receipt = store.update_instance(instance.id, played_at="2026-09-01T12:00:00Z")
+
+    assert receipt.updated["played_at"] == datetime(2026, 9, 1, 12, 0, tzinfo=UTC)
+
+
+# author: Fable 5 (Claude Code) <llm@coltco.net>
+def test_update_leaves_no_temporary_file(store: InstanceStore) -> None:
+    instance = get_minimal_instance()
+    store.create_instance(instance)
+
+    store.update_instance(instance.id, memory_mb=2048)
+
+    directory = store.root/instance.slug
+    assert sorted(item.name for item in directory.iterdir()) == [
+        "instance.json", "logs", "minecraft"
+    ]
+
+
+# TODO(austin): Update loader first and loader_version second. The second update
+# must validate against the model that the first one left in memory.
+@pytest.mark.skip(reason="stubbed for austin")
+def test_second_update_builds_on_first(store: InstanceStore) -> None:
+    """The store must hold the updated model without a refresh."""
+    raise NotImplementedError
+
+
+# ===[UPDATE, DENIED]===
+# author: Fable 5 (Claude Code) <llm@coltco.net>
+def test_denied_key_lands_in_receipt(store: InstanceStore) -> None:
+    instance = get_minimal_instance()
+    store.create_instance(instance)
+
+    receipt = store.update_instance(instance.id, slug="new-slug")
+
+    assert receipt.denied == ["slug"]
+    assert receipt.updated == {}
+
+
+# author: Fable 5 (Claude Code) <llm@coltco.net>
+def test_denied_key_changes_nothing_on_disk(store: InstanceStore) -> None:
+    """The slug and the directory must stay in agreement."""
+    instance = get_minimal_instance()
+    store.create_instance(instance)
+
+    store.update_instance(instance.id, slug="new-slug")
+
+    assert store.read_instance(store.root/instance.slug).slug == instance.slug
+
+
+# author: Fable 5 (Claude Code) <llm@coltco.net>
+def test_mixed_update_applies_allowed_part(store: InstanceStore) -> None:
+    """One denied key must not stop the other changes."""
+    instance = get_minimal_instance()
+    store.create_instance(instance)
+
+    receipt = store.update_instance(instance.id, slug="new-slug", memory_mb=2048)
+
+    assert receipt.denied == ["slug"]
+    assert receipt.updated == {"memory_mb": 2048}
+
+
+# ===[UPDATE, FAULTS]===
+# author: Fable 5 (Claude Code) <llm@coltco.net>
+def test_update_of_unknown_id_raises(store: InstanceStore) -> None:
+    with pytest.raises(InstanceError, match="no instance"):
+        store.update_instance(uuid4(), memory_mb=2048)
+
+
+# author: Fable 5 (Claude Code) <llm@coltco.net>
+def test_unknown_key_raises(store: InstanceStore) -> None:
+    """A typo must not pass in silence."""
+    instance = get_minimal_instance()
+    store.create_instance(instance)
+
+    with pytest.raises(InstanceError, match="invalid"):
+        store.update_instance(instance.id, memory_mib=2048)
+
+
+# author: Fable 5 (Claude Code) <llm@coltco.net>
+def test_invalid_value_raises(store: InstanceStore) -> None:
+    instance = get_minimal_instance()
+    store.create_instance(instance)
+
+    with pytest.raises(InstanceError, match="invalid"):
+        store.update_instance(instance.id, memory_mb=256)
+
+
+# author: Fable 5 (Claude Code) <llm@coltco.net>
+def test_loader_version_without_loader_raises(store: InstanceStore) -> None:
+    """A cross-field rule must hold through an update."""
+    instance = get_minimal_instance()
+    store.create_instance(instance)
+
+    with pytest.raises(InstanceError):
+        store.update_instance(instance.id, loader_version="21.1.248")
+
+
+# TODO(austin): Send an update that does not validate, and show that the
+# manifest on disk holds every value it held before.
+@pytest.mark.skip(reason="stubbed for austin")
+def test_failed_update_leaves_manifest_as_it_was(store: InstanceStore) -> None:
+    """A fault must change nothing on disk."""
+    raise NotImplementedError
 
 
 # ===[REFRESH]===
