@@ -321,12 +321,19 @@ def test_update_leaves_no_temporary_file(store: InstanceStore) -> None:
     ]
 
 
-# TODO(austin): Update loader first and loader_version second. The second update
-# must validate against the model that the first one left in memory.
-@pytest.mark.skip(reason="stubbed for austin")
+# author: Austin Colt <colt.austin@coltco.net>
 def test_second_update_builds_on_first(store: InstanceStore) -> None:
     """The store must hold the updated model without a refresh."""
-    raise NotImplementedError
+    instance = get_minimal_instance()
+    id = store.create_instance(instance)
+
+    store.update_instance(id, name="New Name")
+    store.update_instance(id, memory_mb=2048)
+
+    updated_instance = store.read_instance(store.root/instance.slug)
+
+    assert updated_instance.name == "New Name"
+    assert updated_instance.memory_mb == 2048
 
 
 # ===[UPDATE, DENIED]===
