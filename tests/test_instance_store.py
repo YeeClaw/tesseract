@@ -5,6 +5,7 @@ correctly across implementations.
 Each test writes into a temporary directory, and never into the real one.
 """
 
+import contextlib
 import json
 import shutil
 from collections.abc import Callable
@@ -407,12 +408,21 @@ def test_loader_version_without_loader_raises(store: InstanceStore) -> None:
         store.update_instance(instance.id, loader_version="21.1.248")
 
 
-# TODO(austin): Send an update that does not validate, and show that the
-# manifest on disk holds every value it held before.
-@pytest.mark.skip(reason="stubbed for austin")
+# author: Austin Colt <colt.austin@coltco.net>
 def test_failed_update_leaves_manifest_as_it_was(store: InstanceStore) -> None:
     """A fault must change nothing on disk."""
-    raise NotImplementedError
+    instance = get_minimal_instance()
+    id = store.create_instance(instance)
+
+    # I'm supressing here instead of using `pytest.raises` as to drive in the semantic meaning
+    # of this unit test. `pytest.raises` is an assertion about the test. We don't care about
+    # the exception here, we only care about the bad update and want to validate as such.
+    with contextlib.suppress(InstanceError):
+        # This is a bad change; you cannot have negative RAM (and pydantic will let you know!).
+        store.update_instance(id, memory_mb=-1)
+
+    from_store = store.read_instance(store.root/instance.slug)
+    assert from_store == instance
 
 
 # ===[REFRESH]===
